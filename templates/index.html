@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeTensorManager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>SafeTensorManager</h1>
+        
+        <div class="upload-section">
+            <h2>Upload SafeTensors File</h2>
+            <form id="safetensor-form" enctype="multipart/form-data">
+                <input type="file" name="file" accept=".safetensors" required>
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+
+        <div class="model-path-section">
+            <h2>Load Model from Path</h2>
+            <form id="model-path-form">
+                <input type="text" name="model_path" placeholder="Enter model path" required>
+                <button type="submit">Load Model</button>
+            </form>
+        </div>
+
+        <div class="list-models-section">
+            <h2>List Available Models</h2>
+            <form id="list-models-form">
+                <input type="text" id="directory" placeholder="Enter directory path (optional)">
+                <button type="submit">List Models</button>
+            </form>
+        </div>
+
+        <div class="model-info-section">
+            <h2>Get Current Model Info</h2>
+            <button id="get-model-info">Get Model Info</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
