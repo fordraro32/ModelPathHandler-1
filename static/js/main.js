@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const listModelsForm = document.getElementById('list-models-form');
     const saveModelForm = document.getElementById('save-model-form');
     const resultDiv = document.getElementById('result');
+    const getDbModelsButton = document.getElementById('get-db-models');
+    const dbModelsListDiv = document.getElementById('db-models-list');
 
     safetensorForm.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -43,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultDiv.innerHTML = `<p>Model loaded successfully!</p>
                                        <p>Model Info:</p>
                                        <pre>${JSON.stringify(data.model_info, null, 2)}</pre>`;
+                refreshDbModels();
             }
         })
         .catch(error => {
@@ -105,4 +108,42 @@ document.addEventListener('DOMContentLoaded', function() {
             resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
         });
     });
+
+    getDbModelsButton.addEventListener('click', refreshDbModels);
+
+    function refreshDbModels() {
+        fetch('/db_models')
+        .then(response => response.json())
+        .then(data => {
+            if (data.length === 0) {
+                dbModelsListDiv.innerHTML = '<p>No models in the database.</p>';
+            } else {
+                const tableHTML = `
+                    <table>
+                        <tr>
+                            <th>Name</th>
+                            <th>Path</th>
+                            <th>Type</th>
+                            <th>Parameters</th>
+                        </tr>
+                        ${data.map(model => `
+                            <tr>
+                                <td>${model.name}</td>
+                                <td>${model.path}</td>
+                                <td>${model.type}</td>
+                                <td>${model.parameters}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                `;
+                dbModelsListDiv.innerHTML = tableHTML;
+            }
+        })
+        .catch(error => {
+            dbModelsListDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        });
+    }
+
+    // Initial load of DB models
+    refreshDbModels();
 });
