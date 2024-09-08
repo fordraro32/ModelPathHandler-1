@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const safetensorForm = document.getElementById('safetensor-form');
     const modelPathForm = document.getElementById('model-path-form');
     const listModelsForm = document.getElementById('list-models-form');
+    const saveModelForm = document.getElementById('save-model-form');
     const resultDiv = document.getElementById('result');
 
     safetensorForm.addEventListener('submit', function(e) {
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
             } else {
                 resultDiv.innerHTML = `<p>File uploaded successfully!</p>
-                                       <p>Metadata: ${JSON.stringify(data.metadata)}</p>`;
+                                       <p>Metadata: ${JSON.stringify(data.metadata, null, 2)}</p>`;
             }
         })
         .catch(error => {
@@ -40,7 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
             } else {
                 resultDiv.innerHTML = `<p>Model loaded successfully!</p>
-                                       <p>Model Info: ${JSON.stringify(data.model_info)}</p>`;
+                                       <p>Model Info:</p>
+                                       <pre>${JSON.stringify(data.model_info, null, 2)}</pre>`;
             }
         })
         .catch(error => {
@@ -76,6 +78,27 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 resultDiv.innerHTML = `<p>Current Model Info:</p>
                                        <pre>${JSON.stringify(data, null, 2)}</pre>`;
+            }
+        })
+        .catch(error => {
+            resultDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+        });
+    });
+
+    saveModelForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch('/save_model', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                resultDiv.innerHTML = `<p style="color: red;">Error: ${data.error}</p>`;
+            } else {
+                resultDiv.innerHTML = `<p>${data.message}</p>`;
             }
         })
         .catch(error => {

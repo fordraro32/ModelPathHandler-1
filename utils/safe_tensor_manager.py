@@ -39,7 +39,9 @@ class SafeTensorManager:
                 self.current_model = AutoModel.from_pretrained(model_path)
             elif model_path.endswith('.safetensors'):
                 # Load SafeTensors file
-                self.current_model = self.load_safetensors(model_path)
+                with safe_open(model_path, framework="pt", device="cpu") as f:
+                    tensors = {k: f.get_tensor(k) for k in f.keys()}
+                self.current_model = AutoModel.from_pretrained(None, state_dict=tensors)
             else:
                 # Assume it's a PyTorch model
                 self.current_model = torch.load(model_path)
